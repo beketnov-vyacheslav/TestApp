@@ -1,6 +1,7 @@
 package com.company;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Tree {
@@ -11,14 +12,24 @@ public class Tree {
 		root = new Node(null);
 	}
 
+	// TODO вообще не пойми что делает
 	public void addNode(Node node) {
-		Node parent = findParent(node);
+		Node parent = getParent(node);
 		parent.addChild(node);
 	}
 
-	private Node findParent(Node node) {
-
+	public Node getRoot() {
 		return root;
+	}
+
+	// TODO
+	private Node getParent(Node node) {
+		return null;
+	}
+
+	// TODO
+	public List<List<Node>> getPath(Node<String> node) {
+		return null;
 	}
 
 

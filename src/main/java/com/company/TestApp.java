@@ -1,5 +1,7 @@
 package com.company;
 
+import com.company.Tree.Node;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -13,8 +15,8 @@ public class TestApp {
 
 	private Path taskPath;
 	private Path dictPath;
-	private SearchEngine<String> searchEngine;
-	private List<String> result;
+	private SearchEngineAbstract<String> searchEngine;
+	private List<List<Node>> result;
 
 
 	public TestApp(Path taskPath, Path dictPath) {
@@ -23,7 +25,7 @@ public class TestApp {
 		searchEngine = new BruteForceSearch();
 	}
 
-	public void setSearchEngine(SearchEngine<String> searchEngine) {
+	public void setSearchEngine(SearchEngineAbstract<String> searchEngine) {
 		this.searchEngine = searchEngine;
 	}
 
@@ -77,6 +79,8 @@ public class TestApp {
 			System.out.println("Конечное слово не содержится в словаре");
 			return;
 		}
+		searchEngine.setDictionary(dictionary);
+		searchEngine.setWordsPair(new String[]{from, to});
 		result = searchEngine.search();
 	}
 
@@ -86,13 +90,18 @@ public class TestApp {
 		return dictionary;
 	}
 
-	private void showResult(List<String> result) {
-		if (result.isEmpty()) {
+	private void showResult(List<List<Node>> result) {
+		if (Utilities.isEmpty(result)) {
 			System.out.println("Не удалось обнаружить путь преобразования с заданным словарем");
 		} else {
 			System.out.println("Решение:");
-			for (String s : result) {
-				System.out.println(s);
+
+			int length = result.get(0).size();
+			for (int i = 0; i < length; ++i) {
+				for (List<Node> list : result) {
+					System.out.print(((String) list.get(i).getItem()) + '\t');
+				}
+				System.out.print("\r\n");
 			}
 		}
 	}

@@ -22,5 +22,11 @@ public class Dictionary<E> {
 		return words.contains(word);
 	}
 
+	public boolean isEmpty() {
+		return words.isEmpty();
+	}
 
+	public void remove(E word) {
+		words.remove(word);
+	}
 }

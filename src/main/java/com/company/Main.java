@@ -26,6 +26,8 @@ public class Main {
 
 			if (inputCorrect) {
 				TestApp app = new TestApp(taskPath, dictPath);
+				SearchEngineAbstract<String> engine = new BruteForceSearch();
+				app.setSearchEngine(engine);
 				app.start();
 			}
 		}
