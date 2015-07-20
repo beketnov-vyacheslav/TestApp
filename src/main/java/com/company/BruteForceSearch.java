@@ -14,20 +14,21 @@ public class BruteForceSearch extends SearchEngineAbstract<String> {
 	}
 
 	@Override
-	public List<List<Node>> search() {
+	public List<List<Node<String>>> search() {
 		boolean canStart = checkWords(wordsPair);
 		canStart &= checkDictionary(dictionary);
 		if (!canStart) {
 			return null;
 		}
 
-		Tree tree = new Tree();
-		Node<String> currentNode = new Node<>(tree.getRoot(), wordsPair[0]);
+		Tree<String> tree = new Tree<>();
+		Node<String> currentNode = tree.getRoot();
 		tree.addNode(currentNode);
+		String word = currentNode.getItem();
 
-		while (!currentNode.getItem().equals(wordsPair[1])) {
+		while (!word.equals(wordsPair[1])) {
 			// потенциальные слова
-			List<String> words = generateCandidates(wordsPair[0]);
+			List<String> words = generateCandidates(word);
 
 			// отсекаем слова, которых нет в словаре
 			for (String c : words) {
@@ -47,11 +48,12 @@ public class BruteForceSearch extends SearchEngineAbstract<String> {
 				currentNode.addChild(n);
 			}
 
-			// TODO переход на следующий узел
-			// проверим, есть ли узлы на том же уровне, что текущий
+			currentNode = currentNode.getNext();
 		}
 
-		return tree.getPath(currentNode);
+		List<List<Node<String>>> res = new ArrayList<>();
+		res.add(tree.getPath(currentNode));
+		return res;
 	}
 
 	private List<String> generateCandidates(String word) {

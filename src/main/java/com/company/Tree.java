@@ -1,58 +1,68 @@
 package com.company;
 
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-public class Tree {
-	private Node root;
+public class Tree<E> {
+	private Node<E> root;
 
 
 	public Tree() {
-		root = new Node(null);
+		root = new Node<>(null);
 	}
 
-	// TODO вообще не пойми что делает
-	public void addNode(Node node) {
-		Node parent = getParent(node);
+	public void addNode(Node<E> node) {
+		Node<E> parent = getParent(node);
 		parent.addChild(node);
 	}
 
-	public Node getRoot() {
+	public void addItemToNode(E item, Node<E> node) {
+		if (node != null)
+			node.setItem(item);
+	}
+
+	public Node<E> getRoot() {
 		return root;
 	}
 
-	// TODO
-	private Node getParent(Node node) {
+	private Node<E> getParent(Node<E> node) {
+		if (node != null) {
+			node.getParent();
+		}
 		return null;
 	}
 
-	// TODO
-	public List<List<Node>> getPath(Node<String> node) {
-		return null;
+	public List<Node<E>> getPath(Node<E> node) {
+		List<Node<E>> path = new ArrayList<>();
+		Node<E> current = node;
+		while (current.getParent() != null) {
+			path.add(current.getParent());
+			current = current.getParent();
+		}
+		return path;
 	}
 
 
 	public static class Node<E> {
-		private Node parent;
-		private Set<Node> children;
+		private Node<E> parent;
+		private List<Node<E>> children;
 		private E item;
 
 
-		public Node(Node parent, E item) {
+		public Node(Node<E> parent, E item) {
 			this(parent);
 			this.item = item;
 		}
 
-		public Node(Node parent) {
+		public Node(Node<E> parent) {
 			this.parent = parent;
 		}
 
-		public Node getParent() {
+		public Node<E> getParent() {
 			return parent;
 		}
 
-		public Set<Node> getChildren() {
+		public List<Node<E>> getChildren() {
 			return children;
 		}
 
@@ -64,11 +74,24 @@ public class Tree {
 			return item;
 		}
 
-		public void addChild(Node child) {
+		public void addChild(Node<E> child) {
 			if (children == null) {
-				children = new LinkedHashSet<>();
+				children = new ArrayList<>();
 			}
 			children.add(child);
+		}
+
+		public Node<E> getNext() {
+			Node<E> parent = getParent();
+			if (parent != null) {
+				List<Node<E>> l = parent.getChildren();
+				int indexOfNextItem = l.indexOf(this) + 1;
+				if (l.size() > indexOfNextItem) {
+					return l.get(indexOfNextItem);
+				}
+				return l.get(0);
+			}
+			return null;
 		}
 	}
 }

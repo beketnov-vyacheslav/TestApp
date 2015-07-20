@@ -59,7 +59,7 @@ public class TestApp {
 			try (BufferedReader reader = Files.newBufferedReader(path, DEFAULT_CHARSET)) {
 				String line;
 				while ((line = reader.readLine()) != null) {
-					lines.add(line);
+					lines.add(line.trim());
 				}
 			}
 		} catch (IOException e) {
