@@ -17,8 +17,9 @@ public class Tree<E> {
 	}
 
 	public void addItemToNode(E item, Node<E> node) {
-		if (node != null)
+		if (node != null) {
 			node.setItem(item);
+		}
 	}
 
 	public Node<E> getRoot() {
@@ -35,6 +36,7 @@ public class Tree<E> {
 	public List<Node<E>> getPath(Node<E> node) {
 		List<Node<E>> path = new ArrayList<>();
 		Node<E> current = node;
+		path.add(current);
 		while (current.getParent() != null) {
 			path.add(current.getParent());
 			current = current.getParent();
@@ -79,17 +81,25 @@ public class Tree<E> {
 				children = new ArrayList<>();
 			}
 			children.add(child);
+			child.setParent(this);
+		}
+
+		private void setParent(Node<E> node) {
+			parent = node;
 		}
 
 		public Node<E> getNext() {
 			Node<E> parent = getParent();
 			if (parent != null) {
-				List<Node<E>> l = parent.getChildren();
-				int indexOfNextItem = l.indexOf(this) + 1;
-				if (l.size() > indexOfNextItem) {
-					return l.get(indexOfNextItem);
+				List<Node<E>> nodes = parent.getChildren();
+				int indexOfNextItem = nodes.indexOf(this) + 1;
+				if (nodes.size() > indexOfNextItem) {
+					return nodes.get(indexOfNextItem);
 				}
-				return l.get(0);
+				// иначе обошли всех потомков уровня
+			}
+			if (Utilities.isEmptyNot(children)) {
+				return children.get(0);
 			}
 			return null;
 		}

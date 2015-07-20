@@ -3,6 +3,7 @@ package com.company;
 import com.company.Tree.Node;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class BruteForceSearch extends SearchEngineAbstract<String> {
@@ -23,17 +24,20 @@ public class BruteForceSearch extends SearchEngineAbstract<String> {
 
 		Tree<String> tree = new Tree<>();
 		Node<String> currentNode = tree.getRoot();
-		tree.addNode(currentNode);
+		currentNode.setItem(wordsPair[0]);
 		String word = currentNode.getItem();
+
+		dictionary.remove(wordsPair[0]);
 
 		while (!word.equals(wordsPair[1])) {
 			// потенциальные слова
 			List<String> words = generateCandidates(word);
 
 			// отсекаем слова, которых нет в словаре
-			for (String c : words) {
-				if (!dictionary.contains(c)) {
-					words.remove(c);
+			for (Iterator<String> iterator = words.iterator(); iterator.hasNext(); ) {
+				String s = iterator.next();
+				if (!dictionary.contains(s)) {
+					iterator.remove();
 				}
 			}
 
@@ -49,6 +53,17 @@ public class BruteForceSearch extends SearchEngineAbstract<String> {
 			}
 
 			currentNode = currentNode.getNext();
+			if (currentNode != null) {
+				word = currentNode.getItem();
+			} else {
+				return null;
+			}
+
+			// добавляем последний элемент до выхода из цикла
+			if (word.equals(wordsPair[1])) {
+				Node<String> n = new Node<>(currentNode, wordsPair[1]);
+				currentNode.addChild(n);
+			}
 		}
 
 		List<List<Node<String>>> res = new ArrayList<>();
@@ -63,7 +78,9 @@ public class BruteForceSearch extends SearchEngineAbstract<String> {
 		for (int i = 0; i < word.length(); ++i) {
 			for (char c : letters) {
 				String s = changeLetterWithIndex(i, c, word);
-				candidates.add(s);
+				if (Utilities.isEmptyNot(s)) {
+					candidates.add(s);
+				}
 			}
 		}
 
@@ -72,9 +89,12 @@ public class BruteForceSearch extends SearchEngineAbstract<String> {
 
 	private String changeLetterWithIndex(int i, Character c, String word) {
 		char[] wordByLetters = new char[word.length()];
-		word.getChars(0, word.length() - 1, wordByLetters, 0);
-		wordByLetters[i] = c;
-		return new String(wordByLetters);
+		word.getChars(0, word.length(), wordByLetters, 0);
+		if (wordByLetters[i] != c) {
+			wordByLetters[i] = c;
+			return new String(wordByLetters);
+		}
+		return null;
 	}
 
 	private boolean checkDictionary(Dictionary<String> dictionary) {

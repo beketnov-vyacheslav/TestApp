@@ -1,6 +1,6 @@
 package com.company;
 
-public abstract class SearchEngineAbstract<E> implements SearchEngine {
+public abstract class SearchEngineAbstract<E> implements SearchEngine<E> {
 	protected Dictionary<E> dictionary;
 	protected E[] wordsPair;
 

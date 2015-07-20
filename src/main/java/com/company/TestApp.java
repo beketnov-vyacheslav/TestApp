@@ -5,18 +5,20 @@ import com.company.Tree.Node;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TestApp {
-	public static final Charset DEFAULT_CHARSET = Charset.defaultCharset();
+	public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
 	private Path taskPath;
 	private Path dictPath;
 	private SearchEngineAbstract<String> searchEngine;
-	private List<List<Node>> result;
+	private List<List<Node<String>>> result;
 
 
 	public TestApp(Path taskPath, Path dictPath) {
@@ -39,13 +41,13 @@ public class TestApp {
 			System.out.println("Не указано исходное слово");
 			return;
 		}
-		if (Utilities.isEmpty(words[0])) {
+		if (Utilities.isEmpty(words[1])) {
 			System.out.println("Не указано конечное слово");
 			return;
 		}
 
 		findPaths(words[0], words[1]);
-		showResult(result);
+		showResult();
 	}
 
 	private String[] getWords() {
@@ -90,16 +92,19 @@ public class TestApp {
 		return dictionary;
 	}
 
-	private void showResult(List<List<Node>> result) {
+	private void showResult() {
 		if (Utilities.isEmpty(result)) {
 			System.out.println("Не удалось обнаружить путь преобразования с заданным словарем");
 		} else {
-			System.out.println("Решение:");
+			for (List list : result) {
+				Collections.reverse(list);
+			}
 
+			System.out.println("Решение:");
 			int length = result.get(0).size();
 			for (int i = 0; i < length; ++i) {
-				for (List<Node> list : result) {
-					System.out.print(((String) list.get(i).getItem()) + '\t');
+				for (List<Node<String>> list : result) {
+					System.out.print(list.get(i).getItem() + '\t');
 				}
 				System.out.print("\r\n");
 			}
