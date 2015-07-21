@@ -17,7 +17,7 @@ public class TestApp {
 
 	private Path taskPath;
 	private Path dictPath;
-	private SearchEngineAbstract<String> searchEngine;
+	private SearchEngine<String> searchEngine;
 	private List<List<Node<String>>> result;
 
 
@@ -27,7 +27,7 @@ public class TestApp {
 		searchEngine = new BruteForceSearch();
 	}
 
-	public void setSearchEngine(SearchEngineAbstract<String> searchEngine) {
+	public void setSearchEngine(SearchEngine<String> searchEngine) {
 		this.searchEngine = searchEngine;
 	}
 

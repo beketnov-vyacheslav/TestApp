@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class BruteForceSearch extends SearchEngineAbstract<String> {
+public class BruteForceSearch implements SearchEngine<String> {
 	private Alphabet alphabet;
+	private Dictionary<String> dictionary;
+	private String[] wordsPair;
 
 
 	public BruteForceSearch() {
@@ -69,6 +71,16 @@ public class BruteForceSearch extends SearchEngineAbstract<String> {
 		List<List<Node<String>>> res = new ArrayList<>();
 		res.add(tree.getPath(currentNode));
 		return res;
+	}
+
+	@Override
+	public void setDictionary(Dictionary<String> dictionary) {
+		this.dictionary = dictionary;
+	}
+
+	@Override
+	public void setWordsPair(String[] wordsPair) {
+		this.wordsPair = wordsPair;
 	}
 
 	private List<String> generateCandidates(String word) {
