@@ -16,18 +16,37 @@ public class Tree<E> {
 		this.rootElement = rootElement;
 	}
 
-	public List<Node<E>> getPath(Node<E> node) {
-		List<Node<E>> path = new ArrayList<>();
-		Node<E> current = node;
-		path.add(current);
-		while (current.getParent() != null) {
-			path.add(current.getParent());
-			current = current.getParent();
+	public List<List<Node<E>>> getPaths(List<Node<E>> nodes) {
+		List<List<Node<E>>> paths = new ArrayList<>();
+
+		for (Node<E> n : nodes) {
+			Node<E> current = n;
+			List<Node<E>> path = new ArrayList<>();
+			path.add(current);
+			while (current.getParent() != null) {
+				path.add(current.getParent());
+				current = current.getParent();
+			}
+			paths.add(path);
 		}
-		return path;
+		return paths;
 	}
 
 	public Node<E> getNextElement(Node<E> node) {
+		Node<E> n = getNextElementByLevel(node);
+		if (n != null) {
+			return n;
+		}
+
+		List<Node<E>> children = node.getChildren();
+
+		if (Utils.isEmptyNotList(children)) {
+			return children.get(0);
+		}
+		return null;
+	}
+
+	public Node<E> getNextElementByLevel(Node<E> node) {
 		if (node == null) {
 			return null;
 		}
@@ -42,11 +61,6 @@ public class Tree<E> {
 			// иначе обошли всех потомков уровня
 		}
 
-		List<Node<E>> children = node.getChildren();
-
-		if (Utils.isEmptyNotList(children)) {
-			return children.get(0);
-		}
 		return null;
 	}
 

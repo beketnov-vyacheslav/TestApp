@@ -34,8 +34,9 @@ public class BruteForceSearch implements SearchEngine<String> {
 		dictionary.remove(word);
 
 		Node<String> currentNode = root;
+		List<Node<String>> nodes = new ArrayList<>();
 
-		while (!word.equals(wordsPair[1])) {
+		while (!word.equals(wordsPair[1]) && currentNode != null) {
 			// потенциальные слова
 			List<String> words = generateCandidates(word);
 
@@ -59,25 +60,26 @@ public class BruteForceSearch implements SearchEngine<String> {
 				Node<String> n = new Node<>(c);
 				n.setParent(currentNode);
 				currentNode.addChild(n);
+
+				if (c.equals(wordsPair[1])) {
+					nodes.add(n);
+				}
 			}
 
-			currentNode = tree.getNextElement(currentNode);
+			if (words.contains(wordsPair[1])) {
+				currentNode = tree.getNextElementByLevel(currentNode);
+			} else {
+				currentNode = tree.getNextElement(currentNode);
+			}
+
 			if (currentNode != null) {
 				word = currentNode.getItem();
-			} else {
+			} else if (nodes.isEmpty()) {
 				return null;
-			}
-
-			// добавляем последний элемент до выхода из цикла
-			if (word.equals(wordsPair[1])) {
-				Node<String> n = new Node<>(wordsPair[1]);
-				currentNode.addChild(n);
 			}
 		}
 
-		List<List<Node<String>>> res = new ArrayList<>();
-		res.add(tree.getPath(currentNode));
-		return res;
+		return tree.getPaths(nodes);
 	}
 
 	@Override
