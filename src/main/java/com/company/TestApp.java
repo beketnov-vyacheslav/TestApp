@@ -57,11 +57,11 @@ public class TestApp {
 			System.out.println("Необходимо указать 2 слова");
 			return false;
 		}
-		if (Utilities.isEmpty(words[0])) {
+		if (Utils.isEmpty(words[0])) {
 			System.out.println("Не указано исходное слово");
 			return false;
 		}
-		if (Utilities.isEmpty(words[1])) {
+		if (Utils.isEmpty(words[1])) {
 			System.out.println("Не указано конечное слово");
 			return false;
 		}

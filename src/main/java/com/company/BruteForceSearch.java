@@ -90,7 +90,7 @@ public class BruteForceSearch implements SearchEngine<String> {
 		for (int i = 0; i < word.length(); ++i) {
 			for (char c : letters) {
 				String s = changeLetterWithIndex(i, c, word);
-				if (Utilities.isEmptyNot(s)) {
+				if (Utils.isEmptyNot(s)) {
 					candidates.add(s);
 				}
 			}
@@ -114,10 +114,10 @@ public class BruteForceSearch implements SearchEngine<String> {
 	}
 
 	private boolean checkWords(String[] words) {
-		if (Utilities.isEmpty(words) || words.length != 2) {
+		if (Utils.isEmpty(words) || words.length != 2) {
 			return false;
 		}
-		if (Utilities.isEmpty(words[0]) || Utilities.isEmpty(words[1])) {
+		if (Utils.isEmpty(words[0]) || Utils.isEmpty(words[1])) {
 			return false;
 		}
 		return true;

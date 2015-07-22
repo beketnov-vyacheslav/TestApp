@@ -98,7 +98,7 @@ public class Tree<E> {
 				}
 				// иначе обошли всех потомков уровня
 			}
-			if (Utilities.isEmptyNot(children)) {
+			if (Utils.isEmptyNot(children)) {
 				return children.get(0);
 			}
 			return null;

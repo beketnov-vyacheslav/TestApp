@@ -9,7 +9,7 @@ public class Dictionary<E> {
 
 
 	public void setWords(List<E> strings) {
-		if (Utilities.isEmpty(strings)) {
+		if (Utils.isEmpty(strings)) {
 			throw new IllegalArgumentException("Dictionary can't be empty");
 		}
 		words = new HashSet<>();
