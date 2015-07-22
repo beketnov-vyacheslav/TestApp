@@ -32,68 +32,87 @@ public class TestApp {
 	}
 
 	public void start() {
-		String[] words = getWords();
+		String[] words;
+		Dictionary<String> dictionary;
+		boolean canStart;
+		try {
+			words = getWords();
+			canStart = checkWords(words);
+
+			dictionary = getDict(dictPath);
+			canStart &= checkDictionary(dictionary, words);
+		} catch (IOException e) {
+			System.err.println("Can't read out files with input data");
+			return;
+		}
+
+		if (canStart) {
+			findPaths(words[0], words[1], dictionary);
+			showResult();
+		}
+	}
+
+	private boolean checkWords(String[] words) {
 		if (words.length != 2) {
 			System.out.println("Необходимо указать 2 слова");
-			return;
+			return false;
 		}
 		if (Utilities.isEmpty(words[0])) {
 			System.out.println("Не указано исходное слово");
-			return;
+			return false;
 		}
 		if (Utilities.isEmpty(words[1])) {
 			System.out.println("Не указано конечное слово");
-			return;
+			return false;
 		}
-
-		findPaths(words[0], words[1]);
-		showResult();
+		return true;
 	}
 
-	private String[] getWords() {
+	private boolean checkDictionary(Dictionary<String> dict, String[] words) {
+		if (dict == null) {
+			return false;
+		}
+		if (!dict.contains(words[0])) {
+			System.out.println("Начальное слово не содержится в словаре");
+			return false;
+		}
+		if (!dict.contains(words[1])) {
+			System.out.println("Конечное слово не содержится в словаре");
+			return false;
+		}
+		return true;
+	}
+
+	private String[] getWords() throws IOException {
 		List<String> words = readLinesFromFile(taskPath);
 		return words.toArray(new String[2]);
 	}
 
-	private List<String> readLinesFromFile(Path path) {
+	private List<String> readLinesFromFile(Path path) throws IOException {
 		List<String> lines = new ArrayList<>();
-		try {
-			try (BufferedReader reader = Files.newBufferedReader(path, DEFAULT_CHARSET)) {
-				String line;
-				while ((line = reader.readLine()) != null) {
-					lines.add(line.trim());
-				}
+		try (BufferedReader reader = Files.newBufferedReader(path, DEFAULT_CHARSET)) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				lines.add(line.trim());
 			}
-		} catch (IOException e) {
-			System.err.println("Can't read out the file: " + path);
-			e.printStackTrace();
 		}
 		return lines;
 	}
 
-	private void findPaths(String from, String to) {
-		Dictionary<String> dictionary = getDict(dictPath);
-		if (!dictionary.contains(from)) {
-			System.out.println("Начальное слово не содержится в словаре");
-			return;
-		}
-		if (!dictionary.contains(to)) {
-			System.out.println("Конечное слово не содержится в словаре");
-			return;
-		}
+	private void findPaths(String from, String to, Dictionary<String> dictionary) {
 		searchEngine.setDictionary(dictionary);
 		searchEngine.setWordsPair(new String[]{from, to});
 		result = searchEngine.search();
 	}
 
-	private Dictionary<String> getDict(Path dictPath) {
+	private Dictionary<String> getDict(Path dictPath) throws IOException {
 		Dictionary<String> dictionary = new Dictionary<>();
 		dictionary.setWords(readLinesFromFile(dictPath));
 		return dictionary;
 	}
 
 	private void showResult() {
-		if (Utilities.isEmpty(result)) {
+		if (result == null || result.size() < 1) {
 			System.out.println("Не удалось обнаружить путь преобразования с заданным словарем");
 		} else {
 			for (List list : result) {

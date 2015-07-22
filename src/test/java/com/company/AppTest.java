@@ -4,7 +4,7 @@ import com.company.Tree.Node;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.nio.file.NoSuchFileException;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -15,37 +15,37 @@ import static org.mockito.Mockito.when;
 
 public class AppTest {
 	public static final String WRONG_FILE_PATH = "wrong file path";
-	public static final String WORDS_FILE_PATH = "words.txt";
-	public static final String DICT_FILE_PATH = "dict.txt";
+	public static final String WORDS_FILE_PATH = "/words.txt";
+	public static final String DICT_FILE_PATH = "/dict.txt";
 
 
-	@Test(expected = NoSuchFileException.class)
-	public void wrongPathToWords() {
+	@Test
+	public void wrongPathToWords() throws URISyntaxException {
 		checkResourceDictExist();
 
 		Path words = Paths.get(WRONG_FILE_PATH);
-		Path dict = Paths.get(DICT_FILE_PATH);
+		Path dict = Paths.get(getClass().getResource(DICT_FILE_PATH).toURI());
 
 		runApp(words, dict);
 	}
 
-	@Test(expected = NoSuchFileException.class)
-	public void wrongPathToDictionary() {
+	@Test
+	public void wrongPathToDictionary() throws URISyntaxException {
 		checkResourceWordsExist();
 
-		Path words = Paths.get(WORDS_FILE_PATH);
+		Path words = Paths.get(getClass().getResource(WORDS_FILE_PATH).toURI());
 		Path dict = Paths.get(WRONG_FILE_PATH);
 
 		runApp(words, dict);
 	}
 
 	@Test
-	public void goodPaths() {
+	public void goodPaths() throws URISyntaxException {
 		checkResourceWordsExist();
 		checkResourceDictExist();
 
-		Path words = Paths.get(WORDS_FILE_PATH);
-		Path dict = Paths.get(DICT_FILE_PATH);
+		Path words = Paths.get(getClass().getResource(WORDS_FILE_PATH).toURI());
+		Path dict = Paths.get(getClass().getResource(DICT_FILE_PATH).toURI());
 
 		runApp(words, dict);
 	}
