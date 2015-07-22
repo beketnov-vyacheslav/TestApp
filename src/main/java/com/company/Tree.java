@@ -39,30 +39,56 @@ public class Tree<E> {
 
 		Node<E> parent = node.getParent();
 		if (parent != null) {
+			// проверим, есть ли узлы на этом уровне дерева ("справа")
 			List<Node<E>> nodes = parent.getChildren();
 			int nextIndex = nodes.indexOf(node) + 1;
 			if (nodes.size() > nextIndex) {
+				// есть, возвращаем
 				return nodes.get(nextIndex);
-			} else {
-				// иначе обошли всех потомков уровня, спускаемся глубже
-				for (Node<E> n : nodes) {
-					if (Utils.isEmptyNotList(n.getChildren())) {
-						return n.getChildren().get(0);
-					}
-				}
-				Node<E> current = parent;
-				while (current != null && Utils.isEmptyNotList(current.getChildren())) {
-					current = getNextElementByLevel(current);
-				}
-				if (current != null) {
-					return current.getChildren().get(0);
-				} else {
-					return null;
+			}
+			// узлов на таком же уровне нет, спускаемся глубже
+			// находим первый слева узел с дочерними узлами
+			for (Node<E> n : nodes) {
+				if (Utils.isEmptyNotList(n.getChildren())) {
+					return n.getChildren().get(0);
 				}
 			}
-		} else if (Utils.isEmptyNotList(node.getChildren())) {
-			return node.getChildren().get(0);
+			// если не нашли - выход
+			return getNextElementByLevel(parent);
+		} else {
+			// двигаться можно только вглубину
+			List<Node<E>> children = node.getChildren();
+			if (Utils.isEmptyNotList(children)) {
+				return children.get(0);
+			}
 		}
+
+		//		Node<E> parent = node.getParent();
+		//		if (parent != null) {
+		//			List<Node<E>> nodes = parent.getChildren();
+		//			int nextIndex = nodes.indexOf(node) + 1;
+		//			if (nodes.size() > nextIndex) {
+		//				return nodes.get(nextIndex);
+		//			} else {
+		//				// иначе обошли всех потомков уровня, спускаемся глубже
+		//				for (Node<E> n : nodes) {
+		//					if (Utils.isEmptyNotList(n.getChildren())) {
+		//						return n.getChildren().get(0);
+		//					}
+		//				}
+		//				Node<E> current = parent;
+		//				while (current != null && Utils.isEmptyNotList(current.getChildren())) {
+		//					current = getNextElementByLevel(current);
+		//				}
+		//				if (current != null) {
+		//					return current.getChildren().get(0);
+		//				} else {
+		//					return null;
+		//				}
+		//			}
+		//		} else if (Utils.isEmptyNotList(node.getChildren())) {
+		//			return node.getChildren().get(0);
+		//		}
 		return null;
 	}
 
