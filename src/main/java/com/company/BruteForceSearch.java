@@ -58,7 +58,6 @@ public class BruteForceSearch implements SearchEngine<String> {
 			// формируем очередной уровень дерева
 			for (String c : words) {
 				Node<String> n = new Node<>(c);
-				n.setParent(currentNode);
 				currentNode.addChild(n);
 
 				if (c.equals(wordsPair[1])) {
@@ -66,11 +65,7 @@ public class BruteForceSearch implements SearchEngine<String> {
 				}
 			}
 
-			if (words.contains(wordsPair[1])) {
-				currentNode = tree.getNextElementByLevel(currentNode);
-			} else {
-				currentNode = tree.getNextElement(currentNode);
-			}
+			currentNode = tree.getNextElementByLevel(currentNode);
 
 			if (currentNode != null) {
 				word = currentNode.getItem();
