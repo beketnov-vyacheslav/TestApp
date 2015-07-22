@@ -24,12 +24,16 @@ public class BruteForceSearch implements SearchEngine<String> {
 			return null;
 		}
 
-		Tree<String> tree = new Tree<>();
-		Node<String> currentNode = tree.getRoot();
-		currentNode.setItem(wordsPair[0]);
-		String word = currentNode.getItem();
+		Tree.Node<String> root = new Tree.Node<>();
+		root.setData(wordsPair[0]);
 
-		dictionary.remove(wordsPair[0]);
+		Tree<String> tree = new Tree<>();
+		tree.setRootElement(root);
+
+		String word = root.getItem();
+		dictionary.remove(word);
+
+		Node<String> currentNode = root;
 
 		while (!word.equals(wordsPair[1])) {
 			// потенциальные слова
@@ -45,16 +49,19 @@ public class BruteForceSearch implements SearchEngine<String> {
 
 			// удаляем полученные слова из словаря (для исключения цикличности поиска)
 			for (String c : words) {
-				dictionary.remove(c);
+				if (!c.equals(wordsPair[1])) {
+					dictionary.remove(c);
+				}
 			}
 
 			// формируем очередной уровень дерева
 			for (String c : words) {
-				Node<String> n = new Node<>(currentNode, c);
+				Node<String> n = new Node<>(c);
+				n.setParent(currentNode);
 				currentNode.addChild(n);
 			}
 
-			currentNode = currentNode.getNext();
+			currentNode = tree.getNextElement(currentNode);
 			if (currentNode != null) {
 				word = currentNode.getItem();
 			} else {
@@ -63,7 +70,7 @@ public class BruteForceSearch implements SearchEngine<String> {
 
 			// добавляем последний элемент до выхода из цикла
 			if (word.equals(wordsPair[1])) {
-				Node<String> n = new Node<>(currentNode, wordsPair[1]);
+				Node<String> n = new Node<>(wordsPair[1]);
 				currentNode.addChild(n);
 			}
 		}

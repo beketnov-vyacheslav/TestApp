@@ -3,34 +3,17 @@ package com.company;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Tree<E> {
-	private Node<E> root;
+	private Node<E> rootElement;
 
 
-	public Tree() {
-		root = new Node<>(null);
+	public Node<E> getRootElement() {
+		return this.rootElement;
 	}
 
-	public void addNode(Node<E> node) {
-		Node<E> parent = getParent(node);
-		parent.addChild(node);
-	}
-
-	public void addItemToNode(E item, Node<E> node) {
-		if (node != null) {
-			node.setItem(item);
-		}
-	}
-
-	public Node<E> getRoot() {
-		return root;
-	}
-
-	private Node<E> getParent(Node<E> node) {
-		if (node != null) {
-			node.getParent();
-		}
-		return null;
+	public void setRootElement(Node<E> rootElement) {
+		this.rootElement = rootElement;
 	}
 
 	public List<Node<E>> getPath(Node<E> node) {
@@ -44,19 +27,46 @@ public class Tree<E> {
 		return path;
 	}
 
+	public Node<E> getNextElement(Node<E> node) {
+		if (node == null) {
+			return null;
+		}
+
+		Node<E> parent = node.getParent();
+		if (parent != null) {
+			List<Node<E>> nodes = parent.getChildren();
+			int indexOfNextItem = nodes.indexOf(node) + 1;
+			if (nodes.size() > indexOfNextItem) {
+				return nodes.get(indexOfNextItem);
+			}
+			// иначе обошли всех потомков уровня
+		}
+
+		List<Node<E>> children = node.getChildren();
+
+		if (Utils.isEmptyNotList(children)) {
+			return children.get(0);
+		}
+		return null;
+	}
+
 
 	public static class Node<E> {
 		private Node<E> parent;
+		private E data;
 		private List<Node<E>> children;
-		private E item;
 
 
-		public Node(Node<E> parent, E item) {
-			this(parent);
-			this.item = item;
+		public Node() {
+			super();
 		}
 
-		public Node(Node<E> parent) {
+		public Node(E data) {
+			this();
+			setData(data);
+		}
+
+		public void setParent(Node<E> parent) {
 			this.parent = parent;
 		}
 
@@ -65,15 +75,14 @@ public class Tree<E> {
 		}
 
 		public List<Node<E>> getChildren() {
-			return children;
+			if (this.children == null) {
+				return new ArrayList<>();
+			}
+			return this.children;
 		}
 
-		public void setItem(E item) {
-			this.item = item;
-		}
-
-		public E getItem() {
-			return item;
+		public void setChildren(List<Node<E>> children) {
+			this.children = children;
 		}
 
 		public void addChild(Node<E> child) {
@@ -81,27 +90,15 @@ public class Tree<E> {
 				children = new ArrayList<>();
 			}
 			children.add(child);
-			child.setParent(this);
 		}
 
-		private void setParent(Node<E> node) {
-			parent = node;
+		public E getItem() {
+			return this.data;
 		}
 
-		public Node<E> getNext() {
-			Node<E> parent = getParent();
-			if (parent != null) {
-				List<Node<E>> nodes = parent.getChildren();
-				int indexOfNextItem = nodes.indexOf(this) + 1;
-				if (nodes.size() > indexOfNextItem) {
-					return nodes.get(indexOfNextItem);
-				}
-				// иначе обошли всех потомков уровня
-			}
-			if (Utils.isEmptyNot(children)) {
-				return children.get(0);
-			}
-			return null;
+		public void setData(E data) {
+			this.data = data;
 		}
 	}
 }
+
