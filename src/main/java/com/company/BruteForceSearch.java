@@ -65,7 +65,7 @@ public class BruteForceSearch implements SearchEngine<String> {
 				}
 			}
 
-			currentNode = tree.getNextElementByLevel(currentNode);
+			currentNode = tree.getNextElement(currentNode, !nodes.isEmpty());
 
 			if (currentNode != null) {
 				word = currentNode.getItem();

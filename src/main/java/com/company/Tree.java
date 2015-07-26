@@ -32,63 +32,69 @@ public class Tree<E> {
 		return paths;
 	}
 
-	public Node<E> getNextElementByLevel(Node<E> node) {
-		if (node == null) {
-			return null;
-		}
-
+	public Node<E> getNextElement(Node<E> node, boolean levelOnly) {
 		Node<E> parent = node.getParent();
 		if (parent != null) {
-			// проверим, есть ли узлы на этом уровне дерева ("справа")
-			List<Node<E>> nodes = parent.getChildren();
-			int nextIndex = nodes.indexOf(node) + 1;
-			if (nodes.size() > nextIndex) {
-				// есть, возвращаем
-				return nodes.get(nextIndex);
+			Node<E> rightElement = getRightElementFor(node);
+			if (rightElement != null) {
+				return rightElement;
 			}
-			// узлов на таком же уровне нет, спускаемся глубже
-			// находим первый слева узел с дочерними узлами
-			for (Node<E> n : nodes) {
-				if (Utils.isEmptyNotList(n.getChildren())) {
-					return n.getChildren().get(0);
+
+			if (!levelOnly) {
+				Node<E> nodeBelowFirst = getFirstElement(getFirstElement(parent));
+				if (nodeBelowFirst != null) {
+					return nodeBelowFirst;
 				}
+
+				// поднимаемся наверх
+				return getNewPath(node);
 			}
-			// если не нашли - выход
-			return getNextElementByLevel(parent);
-		} else {
-			// двигаться можно только вглубину
+		}
+		return getFirstElement(node);
+	}
+
+	private Node<E> getNewPath(Node<E> node) {
+		Node<E> previous = null;
+		Node<E> current = node.getParent();
+		while (current != null) {
+			List<Node<E>> children = current.getChildren();
+			if (Utils.isEmptyNotList(children) && children.size() > 1) {
+				break;
+			}
+			previous = current;
+			current = current.getParent();
+		}
+		if (previous != null) {
+			current = getRightElementFor(previous);
+			while (current != null && Utils.isEmptyList(current.getChildren())) {
+				current = getRightElementFor(current);
+			}
+			return getFirstElement(current);
+		}
+		return current;
+	}
+
+	private Node<E> getFirstElement(Node<E> node) {
+		if (node != null) {
 			List<Node<E>> children = node.getChildren();
-			if (Utils.isEmptyNotList(children)) {
+			if (children != null && !children.isEmpty()) {
 				return children.get(0);
 			}
 		}
+		return null;
+	}
 
-		//		Node<E> parent = node.getParent();
-		//		if (parent != null) {
-		//			List<Node<E>> nodes = parent.getChildren();
-		//			int nextIndex = nodes.indexOf(node) + 1;
-		//			if (nodes.size() > nextIndex) {
-		//				return nodes.get(nextIndex);
-		//			} else {
-		//				// иначе обошли всех потомков уровня, спускаемся глубже
-		//				for (Node<E> n : nodes) {
-		//					if (Utils.isEmptyNotList(n.getChildren())) {
-		//						return n.getChildren().get(0);
-		//					}
-		//				}
-		//				Node<E> current = parent;
-		//				while (current != null && Utils.isEmptyNotList(current.getChildren())) {
-		//					current = getNextElementByLevel(current);
-		//				}
-		//				if (current != null) {
-		//					return current.getChildren().get(0);
-		//				} else {
-		//					return null;
-		//				}
-		//			}
-		//		} else if (Utils.isEmptyNotList(node.getChildren())) {
-		//			return node.getChildren().get(0);
-		//		}
+	public Node<E> getRightElementFor(Node<E> node) {
+		Node<E> parent = node.getParent();
+		if (parent != null) {
+			List<Node<E>> children = parent.getChildren();
+			if (Utils.isEmptyNotList(children)) {
+				int indexOfNextElement = children.indexOf(node) + 1;
+				if (indexOfNextElement < children.size()) {
+					return children.get(indexOfNextElement);
+				}
+			}
+		}
 		return null;
 	}
 

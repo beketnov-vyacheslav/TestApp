@@ -37,22 +37,25 @@ public class TreeNodeTest {
 		createAndAddFewNodes(tree);
 
 		Node<String> root = tree.getRootElement();
-		Assert.assertEquals(root.getItem(), ITEM_ROOT);
+		Assert.assertEquals(ITEM_ROOT, root.getItem());
 
-		Node<String> actual = tree.getNextElementByLevel(root);
-		Assert.assertEquals(actual.getItem(), ITEM_1_LEVEL_1);
+		Node<String> actual = tree.getNextElement(root, false);
+		Assert.assertEquals(ITEM_1_LEVEL_1, actual.getItem());
 
-		actual = tree.getNextElementByLevel(actual);
-		Assert.assertEquals(actual.getItem(), ITEM_2_LEVEL_1);
+		actual = tree.getNextElement(actual, false);
+		Assert.assertEquals(ITEM_2_LEVEL_1, actual.getItem());
 
-		actual = tree.getNextElementByLevel(actual);
-		Assert.assertEquals(actual.getItem(), ITEM_3_LEVEL_1);
+		actual = tree.getNextElement(actual, false);
+		Assert.assertEquals(ITEM_3_LEVEL_1, actual.getItem());
 
-		actual = tree.getNextElementByLevel(actual);
-		Assert.assertEquals(actual.getItem(), ITEM_1_LEVEL_2);
+		actual = tree.getNextElement(actual, false);
+		Assert.assertEquals(ITEM_1_LEVEL_2, actual.getItem());
 
-		actual = tree.getNextElementByLevel(actual);
-		Assert.assertEquals(actual.getItem(), ITEM_2_LEVEL_2);
+		actual = tree.getNextElement(actual, false);
+		Assert.assertEquals(ITEM_2_LEVEL_2, actual.getItem());
+
+		actual = tree.getNextElement(actual, false);
+		Assert.assertNull(actual);
 	}
 
 	private static void createAndAddFewNodes(Tree<String> tree) {
